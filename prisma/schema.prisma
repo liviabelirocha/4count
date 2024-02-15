@@ -21,9 +21,10 @@ model User {
 }
 
 model Group {
-  id    String      @id @default(uuid())
-  name  String
-  users GroupUser[]
+  id      String      @id @default(uuid())
+  name    String
+  users   GroupUser[]
+  Expense Expense[]   @relation("group")
 }
 
 model GroupUser {
@@ -44,4 +45,6 @@ model Expense {
   chargerId   String
   charged     User    @relation("charged", fields: [chargedId], references: [id])
   chargedId   String
+  group       Group   @relation("group", fields: [groupId], references: [id])
+  groupId     String
 }

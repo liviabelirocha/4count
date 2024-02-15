@@ -1,27 +1,21 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './expense.service';
-import { UserController } from './expense.controller';
-import { UserRepository } from './expense.repository';
-import { PrismaUserRepository } from './prisma/expense.repository';
+import { ExpenseService } from './expense.service';
+import { ExpenseController } from './expense.controller';
+import { ExpenseRepository } from './expense.repository';
+import { PrismaExpenseRepository } from './prisma/expense.repository';
 import { PrismaService } from 'src/database/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [
-    JwtModule.register({
-      global: true,
-      secret: 'segredo-lokao',
-    }),
-  ],
   providers: [
     PrismaService,
-    UserService,
+    ExpenseService,
     {
-      provide: UserRepository,
-      useClass: PrismaUserRepository,
+      provide: ExpenseRepository,
+      useClass: PrismaExpenseRepository,
     },
   ],
-  controllers: [UserController],
-  exports: [UserService],
+  controllers: [ExpenseController],
+  exports: [ExpenseService],
 })
-export class UserModule {}
+export class ExpenseModule {}

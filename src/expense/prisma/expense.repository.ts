@@ -8,6 +8,6 @@ export class PrismaExpenseRepository implements ExpenseRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(expense: CreateExpenseBody): Promise<void> {
-    await this.prisma.expense.create({ data: expense });
+    // await this.prisma.expense.create({ data: expense });
   }
 }
