@@ -1,3 +1,4 @@
-import { IsNotEmpty, IsEmail } from 'class-validator';
-
-export class CreateExpenseBody {}
+export class CreateExpenseBody {
+  amount: number;
+  title: string;
+}

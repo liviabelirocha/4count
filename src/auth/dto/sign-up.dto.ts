@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsEmail } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
-export class CreateUserBody {
+export class SignUpBody {
   @IsNotEmpty()
   name: string;
 

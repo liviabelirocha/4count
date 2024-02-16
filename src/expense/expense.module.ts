@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ExpenseService } from './expense.service';
+import { PrismaService } from 'src/database/prisma.service';
 import { ExpenseController } from './expense.controller';
 import { ExpenseRepository } from './expense.repository';
+import { ExpenseService } from './expense.service';
 import { PrismaExpenseRepository } from './prisma/expense.repository';
-import { PrismaService } from 'src/database/prisma.service';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   providers: [

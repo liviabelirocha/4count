@@ -8,6 +8,8 @@ export class ExpenseController {
 
   @Post()
   async createExpense(@Body() body: CreateExpenseBody) {
-    return await this.expenseService.create(body);
+    return 'nois da o cu porraaa';
+
+    // return await this.expenseService.create(body);
   }
 }
