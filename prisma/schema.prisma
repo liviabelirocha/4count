@@ -11,20 +11,20 @@ datasource db {
 }
 
 model User {
-  id       String      @id @default(uuid())
+  id       String        @id @default(uuid())
   name     String
-  email    String      @unique
+  email    String        @unique
   password String
-  charger  Expense[]   @relation("charger")
-  charged  Expense[]   @relation("charged")
+  charger  Transaction[] @relation("charger")
+  charged  Transaction[] @relation("charged")
   groups   GroupUser[]
 }
 
 model Group {
-  id      String      @id @default(uuid())
-  name    String
-  users   GroupUser[]
-  Expense Expense[]   @relation("group")
+  id           String        @id @default(uuid())
+  name         String
+  users        GroupUser[]
+  transactions Transaction[] @relation("group")
 }
 
 model GroupUser {
@@ -36,15 +36,22 @@ model GroupUser {
   @@id([userId, groupId])
 }
 
+model Transaction {
+  id        String  @id @default(uuid())
+  amount    Int
+  charger   User    @relation("charger", fields: [chargerId], references: [id])
+  chargerId String
+  charged   User    @relation("charged", fields: [chargedId], references: [id])
+  chargedId String
+  group     Group   @relation("group", fields: [groupId], references: [id])
+  groupId   String
+  expense   Expense @relation("expense", fields: [expenseId], references: [id])
+  expenseId String
+}
+
 model Expense {
-  id          String  @id @default(uuid())
-  title       String
-  description String?
-  amount      Int
-  charger     User    @relation("charger", fields: [chargerId], references: [id])
-  chargerId   String
-  charged     User    @relation("charged", fields: [chargedId], references: [id])
-  chargedId   String
-  group       Group   @relation("group", fields: [groupId], references: [id])
-  groupId     String
+  id           String        @id @default(uuid())
+  amount       Int
+  title        String
+  transactions Transaction[] @relation("expense")
 }
