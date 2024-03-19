@@ -22,4 +22,9 @@ export class ExpenseController {
   async getBalances(@Param() params: { groupId: string }) {
     return this.expenseService.getBalances(params.groupId);
   }
+
+  @Get(':groupId/transactions')
+  async getTransactions(@Param() params: { groupId: string }) {
+    return this.expenseService.getTransactions(params.groupId);
+  }
 }
