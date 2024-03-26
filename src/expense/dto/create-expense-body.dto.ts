@@ -13,9 +13,6 @@ export class CreateExpenseBody {
   })
   charged: string[];
 
-  @IsNotEmpty()
-  groupId: string;
-
   @Optional()
   chargerId: string;
 }

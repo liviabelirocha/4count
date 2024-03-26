@@ -26,4 +26,18 @@ export class PrismaGroupRepository implements GroupRepository {
       data: params,
     });
   }
+
+  async isUserInGroup({
+    groupId,
+    userId,
+  }: GroupRepository.FindByIdAndUser): Promise<boolean> {
+    const group = await this.prisma.groupUser.findFirst({
+      where: {
+        groupId,
+        userId,
+      },
+    });
+
+    return !!group;
+  }
 }

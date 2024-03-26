@@ -12,7 +12,7 @@ export class ExpenseService {
     title,
     chargerId,
     groupId,
-  }: CreateExpenseBody & { chargerId: string }) {
+  }: CreateExpenseBody & { chargerId: string; groupId: string }) {
     const amountInCents = amount * 100;
 
     const amountForEachUser = amountInCents / charged.length;

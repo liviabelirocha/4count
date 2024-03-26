@@ -2,6 +2,10 @@ export abstract class GroupRepository {
   abstract create(expense: GroupRepository.CreateParams): Promise<void>;
 
   abstract addUser(params: GroupRepository.AddUserParams): Promise<void>;
+
+  abstract isUserInGroup(
+    params: GroupRepository.FindByIdAndUser,
+  ): Promise<boolean>;
 }
 
 export declare namespace GroupRepository {
@@ -14,4 +18,6 @@ export declare namespace GroupRepository {
     groupId: string;
     userId: string;
   };
+
+  type FindByIdAndUser = AddUserParams;
 }
