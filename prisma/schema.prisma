@@ -45,7 +45,7 @@ model Transaction {
   chargedId String
   group     Group   @relation("group", fields: [groupId], references: [id])
   groupId   String
-  expense   Expense @relation("expense", fields: [expenseId], references: [id])
+  expense   Expense @relation("expense", fields: [expenseId], references: [id], onDelete: Cascade)
   expenseId String
 }
 

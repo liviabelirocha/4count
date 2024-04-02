@@ -1,25 +1,29 @@
 import { Injectable } from '@nestjs/common';
+import { Atomizer } from 'src/utils/atomizer';
 import { CreateExpenseBody } from './dto/create-expense-body.dto';
 import { ExpenseRepository } from './expense.repository';
 
 @Injectable()
 export class ExpenseService {
-  constructor(private readonly expenseRepository: ExpenseRepository) {}
+  constructor(
+    private readonly expenseRepository: ExpenseRepository,
+    private readonly atomizer: Atomizer,
+  ) {}
 
   async create({
     amount,
-    charged,
+    chargedIds,
     title,
     chargerId,
     groupId,
   }: CreateExpenseBody & { chargerId: string; groupId: string }) {
     const amountInCents = amount * 100;
 
-    const amountForEachUser = amountInCents / charged.length;
+    const amountForEachUser = Math.trunc(amountInCents / chargedIds.length);
 
     const expense = await this.expenseRepository.create({
       amountForEachUser,
-      chargedIds: charged,
+      chargedIds,
       chargerId,
       groupId,
       title,
@@ -93,5 +97,65 @@ export class ExpenseService {
     this.getTransactionsRecursevely(balanceMap, transactions);
 
     return transactions;
+  }
+
+  async update({
+    amount,
+    chargedIds,
+    chargerId,
+    id,
+    title,
+    groupId,
+  }: {
+    id: string;
+    title: string;
+    amount: number;
+    chargedIds: string[];
+    chargerId: string;
+    groupId: string;
+  }) {
+    const amountInCents = amount * 100;
+
+    const amountForEachUser = Math.trunc(amountInCents / chargedIds.length);
+
+    await this.atomizer.runAtomically([
+      async ({ transactionClient }) => {
+        await this.expenseRepository.delete(id, transactionClient);
+
+        await this.expenseRepository.create(
+          {
+            amountForEachUser,
+            chargedIds,
+            chargerId,
+            groupId,
+            title,
+            totalAmount: amountInCents,
+          },
+          transactionClient,
+        );
+      },
+    ])();
+  }
+
+  async getUserExpenses({
+    userId,
+    groupId,
+  }: {
+    userId: string;
+    groupId: string;
+  }) {
+    const transactions =
+      await this.expenseRepository.getTransactionsByChargedId({
+        chargedId: userId,
+        groupId,
+      });
+
+    return transactions.map((t) => ({
+      expenseId: t.expense.id,
+      title: t.expense.title,
+      totalAmount: t.expense.amount,
+      userAmount: t.amount,
+      paidBy: t.charger.name,
+    }));
   }
 }

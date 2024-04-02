@@ -1,22 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { pick } from 'lodash';
 import { PrismaService } from 'src/database/prisma.service';
-import { Balance } from '../dto/balance.dto';
+import { Balance } from '../expense.entity';
 import { ExpenseRepository } from '../expense.repository';
 
 @Injectable()
 export class PrismaExpenseRepository implements ExpenseRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create({
-    amountForEachUser,
-    title,
-    totalAmount,
-    chargedIds,
-    chargerId,
-    groupId,
-  }: ExpenseRepository.CreateParams): Promise<void> {
-    await this.prisma.expense.create({
+  async create(
+    {
+      amountForEachUser,
+      title,
+      totalAmount,
+      chargedIds,
+      chargerId,
+      groupId,
+    }: ExpenseRepository.CreateParams,
+    transactionClient?: PrismaService,
+  ): Promise<void> {
+    const client = transactionClient ?? this.prisma;
+
+    await client.expense.create({
       data: {
         amount: totalAmount,
         title,
@@ -65,5 +70,27 @@ export class PrismaExpenseRepository implements ExpenseRepository {
     });
 
     return balances;
+  }
+
+  async delete(
+    expenseId: string,
+    transactionClient?: PrismaService,
+  ): Promise<void> {
+    const client = transactionClient ?? this.prisma;
+
+    await client.expense.delete({ where: { id: expenseId } });
+  }
+
+  async getTransactionsByChargedId({
+    chargedId,
+    groupId,
+  }: {
+    chargedId: string;
+    groupId: string;
+  }): Promise<ExpenseRepository.GetTransactionsByChargedIdResult> {
+    return await this.prisma.transaction.findMany({
+      where: { chargedId, groupId },
+      include: { charger: true, expense: true },
+    });
   }
 }

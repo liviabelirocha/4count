@@ -30,4 +30,8 @@ export class GroupService {
       userId,
     });
   }
+
+  async list(userId: string) {
+    return await this.groupRepository.list(userId);
+  }
 }

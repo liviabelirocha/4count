@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaModule } from 'src/database/prisma.module';
 import { jwtConstants } from './auth.constants';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -13,9 +13,9 @@ import { UserRepository } from './user.repository';
       global: true,
       secret: jwtConstants.secret,
     }),
+    PrismaModule,
   ],
   providers: [
-    PrismaService,
     AuthService,
     {
       provide: UserRepository,

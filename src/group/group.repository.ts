@@ -1,3 +1,5 @@
+import { Group } from './group.entity';
+
 export abstract class GroupRepository {
   abstract create(expense: GroupRepository.CreateParams): Promise<void>;
 
@@ -6,6 +8,8 @@ export abstract class GroupRepository {
   abstract isUserInGroup(
     params: GroupRepository.FindByIdAndUser,
   ): Promise<boolean>;
+
+  abstract list(userId: string): Promise<Group[]>;
 }
 
 export declare namespace GroupRepository {

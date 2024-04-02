@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { LoggedInRequest } from 'src/auth/dto/jwt-payload.dto';
 import { AddUserToGroupBody } from './dto/add-user-to-group.dto';
 import { CreateGroupBody } from './dto/create-group-body.dto';
@@ -28,5 +28,10 @@ export class GroupController {
       groupId: params.groupId,
       userId: body.userId,
     });
+  }
+
+  @Get()
+  async list(@Req() req: LoggedInRequest) {
+    return await this.groupService.list(req.user.sub);
   }
 }

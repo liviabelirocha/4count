@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
+import { Group } from '../group.entity';
 import { GroupRepository } from '../group.repository';
 
 @Injectable()
@@ -39,5 +40,13 @@ export class PrismaGroupRepository implements GroupRepository {
     });
 
     return !!group;
+  }
+
+  async list(userId: string): Promise<Group[]> {
+    return this.prisma.group.findMany({
+      where: {
+        users: { some: { userId } },
+      },
+    });
   }
 }

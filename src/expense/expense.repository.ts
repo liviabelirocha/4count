@@ -1,9 +1,23 @@
-import { Balance } from './dto/balance.dto';
+import { User } from 'src/auth/auth.entity';
+import { Balance, Expense, Transaction } from './expense.entity';
 
 export abstract class ExpenseRepository {
-  abstract create(expense: ExpenseRepository.CreateParams): Promise<void>;
+  abstract create(
+    expense: ExpenseRepository.CreateParams,
+    transactionClient?: unknown,
+  ): Promise<void>;
 
   abstract getBalances(groupId: string): Promise<Balance[]>;
+
+  abstract delete(
+    expenseId: string,
+    transactionClient?: unknown,
+  ): Promise<void>;
+
+  abstract getTransactionsByChargedId(params: {
+    chargedId: string;
+    groupId: string;
+  }): Promise<ExpenseRepository.GetTransactionsByChargedIdResult>;
 }
 
 export declare namespace ExpenseRepository {
@@ -15,4 +29,9 @@ export declare namespace ExpenseRepository {
     chargerId: string;
     groupId: string;
   };
+
+  type GetTransactionsByChargedIdResult = (Transaction & {
+    expense: Expense;
+    charger: User;
+  })[];
 }
