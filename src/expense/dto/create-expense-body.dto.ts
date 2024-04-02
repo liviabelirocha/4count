@@ -11,7 +11,7 @@ export class CreateExpenseBody {
   @IsNotEmpty({
     each: true,
   })
-  chargedIds: string[];
+  transactions: { chargedId: string; amount: number }[];
 
   @Optional()
   chargerId: string;

@@ -24,8 +24,7 @@ export declare namespace ExpenseRepository {
   type CreateParams = {
     totalAmount: number;
     title: string;
-    amountForEachUser: number;
-    chargedIds: string[];
+    transactions: { chargedId: string; amount: number }[];
     chargerId: string;
     groupId: string;
   };

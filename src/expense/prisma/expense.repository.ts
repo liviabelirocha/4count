@@ -10,10 +10,9 @@ export class PrismaExpenseRepository implements ExpenseRepository {
 
   async create(
     {
-      amountForEachUser,
+      transactions,
       title,
       totalAmount,
-      chargedIds,
       chargerId,
       groupId,
     }: ExpenseRepository.CreateParams,
@@ -26,9 +25,9 @@ export class PrismaExpenseRepository implements ExpenseRepository {
         amount: totalAmount,
         title,
         transactions: {
-          create: chargedIds.map((id) => ({
-            amount: amountForEachUser,
-            chargedId: id,
+          create: transactions.map((t) => ({
+            amount: t.amount,
+            chargedId: t.chargedId,
             chargerId,
             groupId,
           })),

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Atomizer } from 'src/utils/atomizer';
 import { CreateExpenseBody } from './dto/create-expense-body.dto';
+import { UpdateExpenseBody } from './dto/update-expense-body.dto';
 import { ExpenseRepository } from './expense.repository';
 
 @Injectable()
@@ -12,18 +13,30 @@ export class ExpenseService {
 
   async create({
     amount,
-    chargedIds,
+    transactions,
     title,
     chargerId,
     groupId,
   }: CreateExpenseBody & { chargerId: string; groupId: string }) {
     const amountInCents = amount * 100;
 
-    const amountForEachUser = Math.trunc(amountInCents / chargedIds.length);
+    const transactionsSum = transactions.reduce(
+      (acc, curr) => acc + curr.amount * 100,
+      0,
+    );
+
+    // making sure the error is max 2 cents
+    if (
+      Math.abs(transactionsSum - amountInCents) < -2 ||
+      Math.abs(transactionsSum - amountInCents) > 2
+    )
+      throw new Error('Error way too big');
 
     const expense = await this.expenseRepository.create({
-      amountForEachUser,
-      chargedIds,
+      transactions: transactions.map((t) => ({
+        amount: Math.trunc(t.amount * 100),
+        chargedId: t.chargedId,
+      })),
       chargerId,
       groupId,
       title,
@@ -101,22 +114,28 @@ export class ExpenseService {
 
   async update({
     amount,
-    chargedIds,
+    transactions,
     chargerId,
     id,
     title,
     groupId,
-  }: {
+  }: UpdateExpenseBody & {
     id: string;
-    title: string;
-    amount: number;
-    chargedIds: string[];
-    chargerId: string;
     groupId: string;
   }) {
     const amountInCents = amount * 100;
 
-    const amountForEachUser = Math.trunc(amountInCents / chargedIds.length);
+    const transactionsSum = transactions.reduce(
+      (acc, curr) => acc + curr.amount * 100,
+      0,
+    );
+
+    // making sure the error is max 2 cents
+    if (
+      Math.abs(transactionsSum - amountInCents) < -2 ||
+      Math.abs(transactionsSum - amountInCents) > 2
+    )
+      throw new Error('Error way too big');
 
     await this.atomizer.runAtomically([
       async ({ transactionClient }) => {
@@ -124,8 +143,10 @@ export class ExpenseService {
 
         await this.expenseRepository.create(
           {
-            amountForEachUser,
-            chargedIds,
+            transactions: transactions.map((t) => ({
+              amount: Math.trunc(t.amount * 100),
+              chargedId: t.chargedId,
+            })),
             chargerId,
             groupId,
             title,
