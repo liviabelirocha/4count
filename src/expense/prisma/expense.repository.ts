@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { pick } from 'lodash';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/shared/prisma/prisma.service';
 import { Balance } from '../expense.entity';
 import { ExpenseRepository } from '../expense.repository';
 

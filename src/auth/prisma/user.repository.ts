@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SignUpBody } from 'src/auth/dto/sign-up.dto';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/shared/prisma/prisma.service';
 import { User } from '../auth.entity';
 import { UserRepository } from '../user.repository';
 

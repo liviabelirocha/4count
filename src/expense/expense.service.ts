@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Atomizer } from 'src/utils/atomizer';
+import { Atomizer } from 'src/shared/utils/atomizer';
 import { CreateExpenseBody } from './dto/create-expense-body.dto';
 import { UpdateExpenseBody } from './dto/update-expense-body.dto';
 import { ExpenseRepository } from './expense.repository';

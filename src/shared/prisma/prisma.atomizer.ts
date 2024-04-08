@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Atomizer } from 'src/utils/atomizer';
+import { Atomizer } from 'src/shared/utils/atomizer';
 import { PrismaService } from './prisma.service';
 
 @Injectable()

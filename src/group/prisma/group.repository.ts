@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/auth/auth.entity';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/shared/prisma/prisma.service';
 import { Group, GroupUser } from '../group.entity';
 import { GroupRepository } from '../group.repository';
 

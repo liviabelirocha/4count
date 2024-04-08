@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from 'src/auth/modules/user.module';
-import { PrismaModule } from 'src/database/prisma.module';
+import { PrismaModule } from 'src/shared/prisma/prisma.module';
 import { GroupController } from './group.controller';
 import { GroupRepository } from './group.repository';
 import { GroupService } from './group.service';
