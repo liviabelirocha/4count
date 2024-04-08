@@ -1,3 +1,4 @@
+import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { LoggedInRequest } from 'src/auth/dto/jwt-payload.dto';
 import { CreateExpenseBody } from './dto/create-expense-body.dto';
@@ -22,11 +23,15 @@ export class ExpenseController {
   }
 
   @Get('balances')
+  @CacheKey('balances')
+  @CacheTTL(0)
   async getBalances(@Param() params: { groupId: string }) {
     return this.expenseService.getBalances(params.groupId);
   }
 
   @Get('transactions')
+  @CacheKey('transactions')
+  @CacheTTL(0)
   async getTransactions(@Param() params: { groupId: string }) {
     return this.expenseService.getTransactions(params.groupId);
   }

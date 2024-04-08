@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 
-import { APP_GUARD } from '@nestjs/core';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/modules/auth.module';
 import { ExpenseController } from './expense/expense.controller';
@@ -11,7 +12,14 @@ import { GroupGuard } from './group/group.guard';
 import { GroupModule } from './group/group.module';
 
 @Module({
-  imports: [AuthModule, ExpenseModule, GroupModule],
+  imports: [
+    AuthModule,
+    ExpenseModule,
+    GroupModule,
+    CacheModule.register({
+      isGlobal: true,
+    }),
+  ],
   controllers: [AppController, ExpenseController, GroupController],
   providers: [
     {
@@ -21,6 +29,10 @@ import { GroupModule } from './group/group.module';
     {
       provide: APP_GUARD,
       useClass: GroupGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
     },
   ],
 })

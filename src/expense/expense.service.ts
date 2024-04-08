@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Atomizer } from 'src/shared/utils/atomizer';
 import { CreateExpenseBody } from './dto/create-expense-body.dto';
 import { UpdateExpenseBody } from './dto/update-expense-body.dto';
@@ -9,6 +10,7 @@ export class ExpenseService {
   constructor(
     private readonly expenseRepository: ExpenseRepository,
     private readonly atomizer: Atomizer,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async create({
@@ -42,6 +44,8 @@ export class ExpenseService {
       title,
       totalAmount: amountInCents,
     });
+
+    await this.cacheManager.reset();
 
     return expense;
   }
@@ -157,6 +161,8 @@ export class ExpenseService {
         );
       },
     ])();
+
+    await this.cacheManager.reset();
   }
 
   async getUserExpenses({
