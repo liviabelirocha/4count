@@ -1,10 +1,12 @@
 import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { LoggedInRequest } from 'src/auth/dto/jwt-payload.dto';
 import { AddUserToGroupBody } from './dto/add-user-to-group.dto';
 import { CreateGroupBody } from './dto/create-group-body.dto';
 import { GroupService } from './group.service';
 
 @Controller('group')
+@ApiTags('Group')
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 

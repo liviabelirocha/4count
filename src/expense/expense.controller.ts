@@ -1,11 +1,13 @@
 import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { LoggedInRequest } from 'src/auth/dto/jwt-payload.dto';
 import { CreateExpenseBody } from './dto/create-expense-body.dto';
 import { UpdateExpenseBody } from './dto/update-expense-body.dto';
 import { ExpenseService } from './expense.service';
 
 @Controller('expense/:groupId')
+@ApiTags('Expenses')
 export class ExpenseController {
   constructor(private readonly expenseService: ExpenseService) {}
 
