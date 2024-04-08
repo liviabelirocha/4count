@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Atomizer } from 'src/utils/atomizer';
 import { CreateExpenseBody } from './dto/create-expense-body.dto';
 import { UpdateExpenseBody } from './dto/update-expense-body.dto';
@@ -30,7 +30,7 @@ export class ExpenseService {
       Math.abs(transactionsSum - amountInCents) < -2 ||
       Math.abs(transactionsSum - amountInCents) > 2
     )
-      throw new Error('Error way too big');
+      throw new BadRequestException('Error way too big');
 
     const expense = await this.expenseRepository.create({
       transactions: transactions.map((t) => ({
@@ -135,7 +135,7 @@ export class ExpenseService {
       Math.abs(transactionsSum - amountInCents) < -2 ||
       Math.abs(transactionsSum - amountInCents) > 2
     )
-      throw new Error('Error way too big');
+      throw new BadRequestException('Error way too big');
 
     await this.atomizer.runAtomically([
       async ({ transactionClient }) => {
@@ -151,6 +151,7 @@ export class ExpenseService {
             groupId,
             title,
             totalAmount: amountInCents,
+            id,
           },
           transactionClient,
         );

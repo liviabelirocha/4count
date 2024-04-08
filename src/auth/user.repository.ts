@@ -5,4 +5,6 @@ export abstract class UserRepository {
   abstract create(user: SignUpBody): Promise<void>;
 
   abstract findOneByEmail(email: string): Promise<User | undefined>;
+
+  abstract findOneById(id: string): Promise<User | undefined>;
 }

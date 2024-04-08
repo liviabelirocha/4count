@@ -1,20 +1,19 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UserRepository } from 'src/auth/user.repository';
 import { GroupRepository } from './group.repository';
 
 @Injectable()
 export class GroupService {
-  constructor(private readonly groupRepository: GroupRepository) {}
+  constructor(
+    private readonly groupRepository: GroupRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   async create(data: { name: string; userId: string }) {
     return await this.groupRepository.create(data);
   }
 
-  async addUser(data: { groupId: string; userId: string }) {
-    const userAlreadyInGroup = await this.groupRepository.isUserInGroup(data);
-
-    if (userAlreadyInGroup)
-      throw new HttpException('User already in group', 400);
-
+  async addToGroup(data: { groupId: string; name: string }) {
     return await this.groupRepository.addUser(data);
   }
 
@@ -25,13 +24,36 @@ export class GroupService {
     groupId: string;
     userId: string;
   }) {
-    return await this.groupRepository.isUserInGroup({
+    const userGroup = await this.groupRepository.findUserInGroup({
       groupId,
       userId,
     });
+
+    return !!userGroup;
   }
 
   async list(userId: string) {
     return await this.groupRepository.list(userId);
+  }
+
+  async bindToGroup({
+    groupUserId,
+    userId,
+  }: {
+    groupUserId: string;
+    userId: string;
+  }) {
+    const user = await this.userRepository.findOneById(userId);
+
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.groupRepository.update({
+      id: groupUserId,
+      userId,
+    });
+  }
+
+  async listUnboundUsers(groupId: string) {
+    return await this.groupRepository.listUnbountUsers(groupId);
   }
 }

@@ -1,23 +1,21 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String        @id @default(uuid())
-  name     String
-  email    String        @unique
-  password String
-  charger  Transaction[] @relation("charger")
-  charged  Transaction[] @relation("charged")
-  groups   GroupUser[]
+  id        String        @id @default(uuid())
+  name      String
+  email     String        @unique
+  password  String
+  createdAt DateTime      @default(now())
+  groups    GroupUser[]
+  charged   Transaction[] @relation("charged")
+  charger   Transaction[] @relation("charger")
 }
 
 model Group {
@@ -28,30 +26,37 @@ model Group {
 }
 
 model GroupUser {
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String
-  group   Group  @relation(fields: [groupId], references: [id])
+  id      String  @id @default(uuid())
+  userId  String?
   groupId String
-
-  @@id([userId, groupId])
+  name    String
+  group   Group   @relation(fields: [groupId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id])
 }
 
 model Transaction {
   id        String  @id @default(uuid())
   amount    Int
-  charger   User    @relation("charger", fields: [chargerId], references: [id])
   chargerId String
-  charged   User    @relation("charged", fields: [chargedId], references: [id])
   chargedId String
-  group     Group   @relation("group", fields: [groupId], references: [id])
   groupId   String
-  expense   Expense @relation("expense", fields: [expenseId], references: [id], onDelete: Cascade)
   expenseId String
+  charged   User    @relation("charged", fields: [chargedId], references: [id])
+  charger   User    @relation("charger", fields: [chargerId], references: [id])
+  expense   Expense @relation("expense", fields: [expenseId], references: [id], onDelete: Cascade)
+  group     Group   @relation("group", fields: [groupId], references: [id])
 }
 
 model Expense {
   id           String        @id @default(uuid())
   amount       Int
   title        String
+  createdAt    DateTime      @default(now())
   transactions Transaction[] @relation("expense")
+}
+
+model ExpenseChangelog {
+  id        String @id @default(uuid())
+  expenseId String
+  data      Json
 }

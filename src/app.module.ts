@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/modules/auth.module';
 import { ExpenseController } from './expense/expense.controller';
 import { ExpenseModule } from './expense/expense.module';
 import { GroupController } from './group/group.controller';

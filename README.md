@@ -1,4 +1,3 @@
-
 # 4count
 
 ## Description
@@ -9,11 +8,17 @@
 
 * NestJs
 * Prisma
+* Docker 25
 
 ## Installation
 
 ```bash
 $ yarn install
+```
+
+To run the Postgres database
+```bash
+$ docker compose up -d
 ```
 
 ## Running the app

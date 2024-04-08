@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { SignInBody } from './dto/sign-in.dto';
@@ -26,7 +30,7 @@ export class AuthService {
   async signIn({ email, password }: SignInBody) {
     const user = await this.userRepository.findOneByEmail(email);
 
-    if (!user) throw new Error('Not found');
+    if (!user) throw new NotFoundException(email);
 
     const isPasswordMatching = await bcrypt.compare(password, user.password);
 

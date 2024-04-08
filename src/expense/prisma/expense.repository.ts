@@ -15,6 +15,7 @@ export class PrismaExpenseRepository implements ExpenseRepository {
       totalAmount,
       chargerId,
       groupId,
+      id,
     }: ExpenseRepository.CreateParams,
     transactionClient?: PrismaService,
   ): Promise<void> {
@@ -22,6 +23,7 @@ export class PrismaExpenseRepository implements ExpenseRepository {
 
     await client.expense.create({
       data: {
+        id,
         amount: totalAmount,
         title,
         transactions: {

@@ -22,6 +22,7 @@ export abstract class ExpenseRepository {
 
 export declare namespace ExpenseRepository {
   type CreateParams = {
+    id?: string;
     totalAmount: number;
     title: string;
     transactions: { chargedId: string; amount: number }[];
