@@ -14,10 +14,9 @@ export abstract class ExpenseRepository {
     transactionClient?: unknown,
   ): Promise<void>;
 
-  abstract getTransactionsByChargedId(params: {
-    chargedId: string;
-    groupId: string;
-  }): Promise<ExpenseRepository.GetTransactionsByChargedIdResult>;
+  abstract getExpensesByGroup(
+    groupId: string,
+  ): Promise<ExpenseRepository.GetExpensesByGroupResult>;
 }
 
 export declare namespace ExpenseRepository {
@@ -30,8 +29,14 @@ export declare namespace ExpenseRepository {
     groupId: string;
   };
 
-  type GetTransactionsByChargedIdResult = (Transaction & {
+  type GetTransactionsByUserIdResult = (Transaction & {
     expense: Expense;
     charger: User;
+  })[];
+
+  type GetExpensesByGroupResult = (Expense & {
+    transactions: (Transaction & {
+      charger: User;
+    })[];
   })[];
 }

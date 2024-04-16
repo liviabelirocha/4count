@@ -82,16 +82,16 @@ export class PrismaExpenseRepository implements ExpenseRepository {
     await client.expense.delete({ where: { id: expenseId } });
   }
 
-  async getTransactionsByChargedId({
-    chargedId,
-    groupId,
-  }: {
-    chargedId: string;
-    groupId: string;
-  }): Promise<ExpenseRepository.GetTransactionsByChargedIdResult> {
-    return await this.prisma.transaction.findMany({
-      where: { chargedId, groupId },
-      include: { charger: true, expense: true },
+  async getExpensesByGroup(
+    groupId: string,
+  ): Promise<ExpenseRepository.GetExpensesByGroupResult> {
+    return await this.prisma.expense.findMany({
+      where: {
+        transactions: {
+          every: { groupId },
+        },
+      },
+      include: { transactions: { include: { charger: true } } },
     });
   }
 }

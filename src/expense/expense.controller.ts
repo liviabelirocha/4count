@@ -39,11 +39,11 @@ export class ExpenseController {
   }
 
   @Get()
-  async getByUser(
+  async getByGroup(
     @Param() params: { groupId: string },
     @Req() req: LoggedInRequest,
   ) {
-    return this.expenseService.getUserExpenses({
+    return this.expenseService.getGroupExpenses({
       groupId: params.groupId,
       userId: req.user.sub,
     });

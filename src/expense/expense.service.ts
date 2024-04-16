@@ -165,25 +165,37 @@ export class ExpenseService {
     await this.cacheManager.reset();
   }
 
-  async getUserExpenses({
-    userId,
+  async getGroupExpenses({
     groupId,
+    userId,
   }: {
-    userId: string;
     groupId: string;
-  }) {
-    const transactions =
-      await this.expenseRepository.getTransactionsByChargedId({
-        chargedId: userId,
-        groupId,
-      });
+    userId: string;
+  }): Promise<
+    {
+      expenseId: string;
+      title: string;
+      totalAmount: number;
+      selfAmount?: number;
+      paidByName: string;
+      paidById: string;
+    }[]
+  > {
+    const expenses = await this.expenseRepository.getExpensesByGroup(groupId);
 
-    return transactions.map((t) => ({
-      expenseId: t.expense.id,
-      title: t.expense.title,
-      totalAmount: t.expense.amount,
-      userAmount: t.amount,
-      paidBy: t.charger.name,
-    }));
+    return expenses.map((e) => {
+      const userChargedInfo = e.transactions.find(
+        (t) => t.chargedId === userId,
+      );
+
+      return {
+        expenseId: e.id,
+        title: e.title,
+        totalAmount: e.amount,
+        selfAmount: userChargedInfo?.amount,
+        paidByName: e.transactions[0].charger.name,
+        paidById: e.transactions[0].chargerId,
+      };
+    });
   }
 }
